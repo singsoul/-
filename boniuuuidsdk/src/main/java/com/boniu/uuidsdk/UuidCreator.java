@@ -16,6 +16,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.bun.miitmdid.core.ErrorCode;
+import com.bun.miitmdid.core.JLibrary;
 import com.bun.miitmdid.core.MdidSdkHelper;
 import com.bun.supplier.IIdentifierListener;
 import com.bun.supplier.IdSupplier;
@@ -59,11 +60,16 @@ public class UuidCreator {
             code = MdidSdkHelper.InitSdk(context, true, new IIdentifierListener() {
                 @Override
                 public void OnSupport(boolean b, IdSupplier idSupplier) {
-                    oaid=idSupplier.getOAID();
-                    Log.e(TAG, "OnSupport: " + oaid );
+                    String myoaid=idSupplier.getOAID();
+                    if (TextUtils.isEmpty(myoaid)){
+                        oaid = "error-" + UUID.randomUUID().toString();
+                    }else{
+                        oaid = myoaid;
+                    }
+                    Log.d(TAG, "OnSupport: " + oaid );
                 }
             });
-            Log.e(TAG, "UuidCreator: " + code );
+            Log.d(TAG, "UuidCreator: " + code );
         }
     }
     public static UuidCreator getInstance(Context context) {
@@ -88,6 +94,7 @@ public class UuidCreator {
      * @return
      */
     public String getDeviceId() {
+        Log.d(TAG, "no1:  " + code + ":::" + oaid );
         if (code == 0 || code == ErrorCode.INIT_ERROR_RESULT_DELAY){
             if (TextUtils.isEmpty(oaid)){
                 oaid = "error-" + UUID.randomUUID().toString();
@@ -98,7 +105,7 @@ public class UuidCreator {
             }
         }
         oaidKey = AESUtil.encrypt(oaid,key);
-        Log.e(TAG, "getDeviceId: " + oaid + ":::" + oaidKey );
+        Log.d(TAG, "getDeviceId: " + oaid + ":::" + oaidKey );
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         String deviceId = sharedPreferences.getString(SP_KEY_DEVICE_ID, "");
@@ -111,7 +118,12 @@ public class UuidCreator {
                     deviceId = oaid;
                 }else{
                     deviceId = AESUtil.decrypt(fileuuid,key);
+                    if (TextUtils.isEmpty(deviceId)){
+                        creatUUIDFile(context,filename,oaidKey);
+                        deviceId = oaid;
+                    }
                 }
+                Log.d(TAG, "deviceId: " + deviceId );
             }else{
                 String fileuuid = get9UUid();
                 if (TextUtils.isEmpty(fileuuid)){
@@ -119,6 +131,10 @@ public class UuidCreator {
                     deviceId = oaid;
                 }else{
                     deviceId = AESUtil.decrypt(fileuuid,key);
+                    if (TextUtils.isEmpty(deviceId)){
+                        createFile(oaidKey);
+                        deviceId = oaid;
+                    }
                 }
             }
         }else{
@@ -136,7 +152,7 @@ public class UuidCreator {
             }
 
             oaidKey = AESUtil.encrypt(deviceId,key);
-            Log.e(TAG, "getDeviceId1: " + oaidKey );
+            Log.d(TAG, "getDeviceId1: " + oaidKey );
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 creatUUIDFile(context,filename,oaidKey);
@@ -144,6 +160,8 @@ public class UuidCreator {
                 createFile(oaidKey);
             }
         }
+
+
         sharedPreferences.edit()
                 .putString(SP_KEY_DEVICE_ID, deviceId)
                 .apply();
@@ -190,7 +208,7 @@ public class UuidCreator {
             e.printStackTrace();
         } catch (Exception e){
             e.printStackTrace();
-            Log.e(TAG, "creatUUIDFile: " + e.getMessage() );
+            Log.d(TAG, "creatUUIDFile: " + e.getMessage() );
         }
     }
 
@@ -205,7 +223,7 @@ public class UuidCreator {
         File applicationFileDir = new File(externalDownloadsDir, TEMP_DIR);
         if (!applicationFileDir.exists()) {
             if (!applicationFileDir.mkdirs()) {
-                Log.e(TAG, "文件夹创建失败: " + applicationFileDir.getPath());
+                Log.d(TAG, "文件夹创建失败: " + applicationFileDir.getPath());
             }
         }
         File file = new File(applicationFileDir, TEMP_FILE_NAME);
@@ -251,7 +269,7 @@ public class UuidCreator {
         File applicationFileDir = new File(externalDownloadsDir, TEMP_DIR);
         if (!applicationFileDir.exists()) {
             if (!applicationFileDir.mkdirs()) {
-                Log.e(TAG, "文件夹创建失败: " + applicationFileDir.getPath());
+                Log.d(TAG, "文件夹创建失败: " + applicationFileDir.getPath());
             }
         }
         File file = new File(applicationFileDir, TEMP_FILE_NAME);
@@ -265,10 +283,10 @@ public class UuidCreator {
                 fileWriter = new FileWriter(file, false);
                 fileWriter.write(myoaidkey);
             } else {
-                Log.e(TAG, "文件创建失败：" + file.getPath());
+                Log.d(TAG, "文件创建失败：" + file.getPath());
             }
         } catch (Exception e) {
-            Log.e(TAG, "文件创建失败：" + file.getPath() + "::" + e.getMessage());
+            Log.d(TAG, "文件创建失败：" + file.getPath() + "::" + e.getMessage());
             e.printStackTrace();
         } finally {
             if (fileWriter != null) {
@@ -315,7 +333,7 @@ public class UuidCreator {
             while (mCursor.moveToNext()) {
                 int columnIndex = mCursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 File file = new File(mCursor.getString(columnIndex));
-                Log.e(TAG, "getUUid: " + file.getPath() );
+                Log.d(TAG, "getUUid: " + file.getPath() );
                 if (file.exists()){
                     try {
                         InputStream instream = new FileInputStream(file);
@@ -335,7 +353,7 @@ public class UuidCreator {
                     {
                         Log.d("TestFile", e.getMessage());
                     }
-                    Log.e(TAG, "checkUUIDFileByUricontent: " + getSaveContent );
+                    Log.d(TAG, "checkUUIDFileByUricontent: " + getSaveContent );
                 }
 //                String thumbPath = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
 //                        .appendPath(saveFileName).build().toString();
