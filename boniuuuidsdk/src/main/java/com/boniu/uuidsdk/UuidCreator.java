@@ -38,8 +38,6 @@ public class UuidCreator {
     private final String SP_NAME = "oaid_info";
     private final String SP_KEY_DEVICE_ID = "oaid_txt";
 
-
-
     private final String TEMP_DIR = "system_uuid";
     private final String TEMP_FILE_NAME = "uuid_file";
 
