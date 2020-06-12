@@ -13,26 +13,13 @@ android {
 
 }
 
-buildscript {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-
-    dependencies {
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-    }
-}
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    api files('libs/msa_mdid_1.0.13.aar')
+    implementation files('libs/msa_mdid_1.0.13.aar')
 
 }
 
