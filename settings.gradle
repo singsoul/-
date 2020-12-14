@@ -1,2 +1,2 @@
-include ':boniuuuidsdk'
+include ':boniuuuidsdk', ':myapplication'
 rootProject.name='UUidSdk'
