@@ -1,4 +1,4 @@
-package com.boniu.uuidsdk;
+package com.shenmeiguan.myapplication;
 
 /**
  * Created by ZZF on 18/06/12.
