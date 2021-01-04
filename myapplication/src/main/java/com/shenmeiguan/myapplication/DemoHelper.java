@@ -60,7 +60,7 @@ public class DemoHelper {
                 if (idSupplier != null){
                     String oaid = idSupplier.getOAID();
                     saveCode(oaidInterfaces,oaid);
-                    oaidInterfaces.OnIdsAvalid(oaid);
+//                    oaidInterfaces.OnIdsAvalid(oaid);
                 }else{
                     saveCode(oaidInterfaces,"");
                 }
@@ -69,12 +69,15 @@ public class DemoHelper {
     }
 
     private static void saveCode(OaidInterfaces oaidInterfaces, String uuid){
+        String deviceId;
         if (TextUtils.isEmpty(uuid)){
             uuid = UUID.randomUUID().toString();
+            deviceId = SPUtils.getInstance(MyApp.getInstance()).getString(UUidUtils.UUID_STR);
+        }else{
+            deviceId = uuid;
         }
-        String oaidKey = AESUtil.encrypt(uuid,key);
 
-        String deviceId = SPUtils.getInstance(MyApp.getInstance()).getString(UUidUtils.UUID_STR);
+        String oaidKey = AESUtil.encrypt(uuid,key);
         if (TextUtils.isEmpty(deviceId)) {
             String fileuuid = get9UUid();
             if (TextUtils.isEmpty(fileuuid)){
@@ -88,7 +91,6 @@ public class DemoHelper {
                 }
             }
         }else{
-
             oaidKey = AESUtil.encrypt(deviceId,key);
             createFile(oaidKey);
         }
