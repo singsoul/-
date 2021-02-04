@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.bun.miitmdid.core.ErrorCode;
 import com.bun.miitmdid.core.MdidSdkHelper;
@@ -60,7 +61,6 @@ public class DemoHelper {
                 if (idSupplier != null){
                     String oaid = idSupplier.getOAID();
                     saveCode(oaidInterfaces,oaid);
-//                    oaidInterfaces.OnIdsAvalid(oaid);
                 }else{
                     saveCode(oaidInterfaces,"");
                 }
@@ -70,22 +70,26 @@ public class DemoHelper {
 
     private static void saveCode(OaidInterfaces oaidInterfaces, String uuid){
         String deviceId;
-        if (TextUtils.isEmpty(uuid)){
+        if (TextUtils.isEmpty(uuid) || "00000000000000000000000000000000".equals(uuid) || "00000000-0000-0000-0000-000000000000".equals(uuid)){
             uuid = UUID.randomUUID().toString();
             deviceId = SPUtils.getInstance(MyApp.getInstance()).getString(UUidUtils.UUID_STR);
-        }else{
+//            if ("00000000000000000000000000000000".equals(deviceId) || "00000000-0000-0000-0000-000000000000".equals(deviceId)){
+//                deviceId = uuid;
+//            }
+        }
+        else{
             deviceId = uuid;
         }
 
         String oaidKey = AESUtil.encrypt(uuid,key);
-        if (TextUtils.isEmpty(deviceId)) {
+        if (TextUtils.isEmpty(deviceId) || "00000000000000000000000000000000".equals(deviceId) || "00000000-0000-0000-0000-000000000000".equals(deviceId)) {
             String fileuuid = get9UUid();
             if (TextUtils.isEmpty(fileuuid)){
                 createFile(oaidKey);
                 deviceId = uuid;
             }else{
                 deviceId = AESUtil.decrypt(fileuuid,key);
-                if (TextUtils.isEmpty(deviceId)){
+                if (TextUtils.isEmpty(deviceId) || "00000000000000000000000000000000".equals(deviceId) || "00000000-0000-0000-0000-000000000000".equals(deviceId)){
                     createFile(oaidKey);
                     deviceId = uuid;
                 }
@@ -127,6 +131,7 @@ public class DemoHelper {
                 bufferedReader.close();
                 fileReader.close();
             } catch (Exception e) {
+                Log.e(TAG, "get9UUid: " + e.getLocalizedMessage() );
                 e.printStackTrace();
             } finally {
                 if (bufferedReader != null) {

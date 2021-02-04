@@ -11,7 +11,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //获取uuid
         String oaid = UUidUtils.getOaid();
         Log.e(TAG, "onCreate:  " + oaid);
