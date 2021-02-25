@@ -31,11 +31,12 @@ public class DemoHelper {
     private static boolean isNext = true;
     public static void getDeviceIds(Context context, final OaidInterfaces oaidInterfaces){
         int nres = CallFromReflect(context,oaidInterfaces);
-
+        Log.e(TAG, "getDeviceIds: " + nres );
         if(nres == ErrorCode.INIT_ERROR_RESULT_DELAY){//延迟获取
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    Log.e(TAG, "run: " + isNext );
                     if (isNext){
                         saveCode(oaidInterfaces,"");
                     }
@@ -57,9 +58,11 @@ public class DemoHelper {
         return MdidSdkHelper.InitSdk(cxt, true, new IIdentifierListener() {
             @Override
             public void OnSupport(boolean b, IdSupplier idSupplier) {
+                Log.e(TAG, "OnSupport: " + b + idSupplier );
                 isNext = false;
                 if (idSupplier != null){
                     String oaid = idSupplier.getOAID();
+                    Log.e(TAG, "OnSupport: " + oaid );
                     saveCode(oaidInterfaces,oaid);
                 }else{
                     saveCode(oaidInterfaces,"");

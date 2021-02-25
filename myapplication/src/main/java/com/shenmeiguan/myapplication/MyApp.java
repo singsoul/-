@@ -2,6 +2,7 @@ package com.shenmeiguan.myapplication;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 public class MyApp extends Application {
 
@@ -20,7 +21,7 @@ public class MyApp extends Application {
         DemoHelper.getDeviceIds(this, new DemoHelper.OaidInterfaces() {
             @Override
             public void OnIdsAvalid(String oaid) {
-
+                Log.e("asd", "OnIdsAvalid: " + oaid );
             }
         });
     }
