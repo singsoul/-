@@ -1,8 +1,13 @@
 package com.shenmeiguan.myapplication;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,9 +19,11 @@ import com.bun.miitmdid.interfaces.IdSupplier;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.UUID;
 
 public class DemoHelper {
@@ -111,6 +118,7 @@ public class DemoHelper {
 
     }
 
+
     /**
      * android 10以下获取本地uuid
      * @return
@@ -157,8 +165,8 @@ public class DemoHelper {
         }else{
             return "";
         }
-
     }
+
     /**
      * android 10以下生成文件
      */
@@ -193,5 +201,8 @@ public class DemoHelper {
         }
         return file.getPath()+"";
     }
+
+
+
 
 }
